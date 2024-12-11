@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useToaster } from "@/hooks/useToaster";
 import { useRouter } from "next/router";
-import { validationSchema } from "./index";
+import { validationSchema } from "./scheme.js";
 
 const Vehicle = () => {
   const router = useRouter();
