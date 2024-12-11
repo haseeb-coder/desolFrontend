@@ -1,26 +1,14 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react"; // Import useState for managing show password toggle
+import { useState } from "react";
 import { useToaster } from "@/hooks/useToaster";
+import { validationSchema } from "./index";
 
 const Login = () => {
   const router = useRouter();
   const { showSuccess, showError } = useToaster();
-
-  // State to toggle the password visibility
   const [showPassword, setShowPassword] = useState(false);
-
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-  });
-
   const handleLogin = async (values) => {
     try {
       const response = await axios.post(
@@ -42,7 +30,6 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        {/* Heading with updated styling */}
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Login
         </h2>
@@ -75,7 +62,6 @@ const Login = () => {
                 />
               </div>
 
-              {/* Password Field with show/hide functionality */}
               <div className="mb-4">
                 <label
                   htmlFor="password"
@@ -84,7 +70,7 @@ const Login = () => {
                   Password
                 </label>
                 <Field
-                  type={showPassword ? "text" : "password"} // Toggle password visibility based on state
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   className="mt-2 p-2 w-full border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
@@ -95,14 +81,13 @@ const Login = () => {
                   className="text-red-500 text-sm"
                 />
 
-                {/* Checkbox to toggle password visibility */}
                 <div className="flex items-center mt-2">
                   <Field
                     type="checkbox"
                     id="showPassword"
                     name="showPassword"
-                    checked={showPassword} // Bind the state to checkbox
-                    onChange={() => setShowPassword(!showPassword)} // Toggle the state on change
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
                     className="mr-2"
                   />
                   <label
@@ -114,7 +99,6 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"

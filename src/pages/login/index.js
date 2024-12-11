@@ -1,4 +1,4 @@
-import Login from '@/components/Login'
+import Login from '@/views/Login'
 import React from 'react'
 
 const index = () => {

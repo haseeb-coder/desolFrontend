@@ -1,53 +1,19 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 import { useEffect } from "react";
 import { useToaster } from "@/hooks/useToaster";
 import { useRouter } from "next/router";
+import { validationSchema } from "./index";
 
 const Vehicle = () => {
   const router = useRouter();
   const { showSuccess, showError } = useToaster();
 
-  const validationSchema = Yup.object({
-    carModel: Yup.string()
-      .min(3, "Car model must be at least 3 characters")
-      .required("Car model is required"),
-    price: Yup.number()
-      .min(1, "Price must be greater than 0")
-      .required("Price is required"),
-    phone: Yup.string()
-      .matches(
-        /^0[1-3][0-9]{9}$/,
-        "Phone number must be valid (e.g., 01123456789)"
-      )
-      .required("Phone number is required"),
-    numberOfCopies: Yup.number()
-      .required()
-      .min(1, "Number of copies must be at least 1")
-      .max(10, "Number of copies cannot exceed 10")
-      .required("Number of copies is required"),
-    pictures: Yup.array()
-      .of(Yup.mixed().required("Image is required"))
-      .test(
-        "image-count",
-        "Number of uploaded images must match the number of copies",
-        function (value) {
-          return value && value.length === this.parent.numberOfCopies;
-        }
-      ),
-    city: Yup.string()
-      .oneOf(["Lahore", "Karachi"], "Please select a valid city")
-      .required("City is required"),
-  });
-
   const handleFormSubmit = async (values) => {
-    // Fetch token and userId from localStorage
     let userData = JSON.parse(localStorage.getItem("data"));
     const token = userData?.token;
     const userId = userData?.userId;
 
-    // Check if the token and userId exist
     if (!token || !userId) {
       showError("Authorization failed. Please log in again.");
       router.push("/login");
@@ -55,17 +21,15 @@ const Vehicle = () => {
     }
 
     const formData = new FormData();
-    // Append other form values
     formData.append("carModel", values.carModel);
     formData.append("price", values.price);
     formData.append("phone", values.phone);
     formData.append("numberOfCopies", values.numberOfCopies);
-    formData.append("city", values.city); // Add city to form data
+    formData.append("city", values.city);
     formData.append("userId", userId);
 
-    // Append images to the form data
     values.pictures.forEach((image) => {
-      formData.append("images", image); // 'images' is the field name in the backend for file upload
+      formData.append("images", image);
     });
 
     try {
@@ -110,7 +74,7 @@ const Vehicle = () => {
       <div className="flex justify-between items-center p-4 bg-blue-600 text-white shadow-md">
         <div className="text-lg font-bold">
           <img
-            src="/car.png"
+            src="/car.jpg"
             alt="Logo"
             className="invert"
             width={60}
@@ -263,9 +227,8 @@ const Vehicle = () => {
                     multiple
                     accept="image/*"
                     onChange={(e) => {
-                      // Convert the FileList to an array and set it in Formik's state
                       const files = Array.from(e.target.files);
-                      setFieldValue("pictures", files); // This ensures that pictures is set as an array
+                      setFieldValue("pictures", files);
                     }}
                     className="mt-2 p-2 w-full border border-blue-300 rounded-md focus:outline-blue-500"
                   />
